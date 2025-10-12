@@ -1,0 +1,442 @@
+import React, { useState } from "react";
+import {
+  ShoppingCartIcon,
+  SparklesIcon,
+  FireIcon,
+} from "@heroicons/react/24/solid";
+import { Check } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import { NavLink } from "react-router-dom";
+// Interface pour simuler le context
+
+interface Dish {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: "jus" | "Bière" | "Bière Formule de 5" | "Eau";
+  isPopular?: boolean;
+  isNew?: boolean;
+}
+
+const dishes: Dish[] = [
+  {
+    id: "39",
+    name: "CoCa",
+    description: "1,5 L",
+    price: 4,
+    image: "./coca.jpg",
+    category: "jus",
+    isPopular: true,
+  },
+  {
+    id: "40",
+    name: "Orangina",
+    description: "1,5L",
+    price: 4,
+    image: "./orangina.jpg",
+    category: "jus",
+    isPopular: true,
+  },
+  {
+    id: "41",
+    name: "Schewppes",
+    description: "1,5 L",
+    price: 4,
+    image: "./schewppes.jpg",
+    category: "jus",
+  },
+  {
+    id: "42",
+    name: "oasis",
+    description: "1,5L",
+    price: 4,
+    image: "./oasis.jpg",
+    category: "jus",
+  },
+  {
+    id: "43",
+    name: "Heineken",
+    description: "25 CL",
+    price: 2.8,
+    image: "./heinekenpetit.jpg",
+    category: "Bière",
+  },
+  {
+    id: "44",
+    name: "1664",
+    description: "25 CL",
+    price: 2.8,
+    image: "./1664.jpg",
+    category: "Bière",
+  },
+  {
+    id: "45",
+    name: "Leffe",
+    description: "bière 25 cl",
+    price: 3,
+    image: "./leffe.jpg",
+    category: "Bière",
+  },
+  {
+    id: "46",
+    name: "Heineken",
+    description: "formule de 5 bière 25 cl",
+    price: 10,
+    image: "./heinekenpetit.jpg",
+    category: "Bière Formule de 5",
+  },
+  {
+    id: "47",
+    name: "Leffe",
+    description: "formule de 5 bière 25 cl",
+    price: 10,
+    image: "./leffe.jpg",
+    category: "Bière Formule de 5",
+    isNew: true,
+  },
+  {
+    id: "48",
+    name: "1664",
+    description: "formule de 5 bière 25 cl",
+    price: 10,
+    image: "./1664.jpg",
+    category: "Bière Formule de 5",
+  },
+  {
+    id: "49",
+    name: "Heineken",
+    description: "grande bière de 75 cl",
+    price: 5,
+    image: "./heinekenpetit.jpg",
+    category: "Bière",
+    isPopular: true,
+  },
+  {
+    id: "50",
+    name: "1664",
+    description: "grande bière de 75 cl",
+    price: 5,
+    image: "./1664big.jpg",
+    category: "Bière",
+  },
+  {
+    id: "51",
+    name: "petite guinness",
+    description: "bière de 33CL",
+    price: 5,
+    image: "./guiness.jpg",
+    category: "Bière",
+  },
+  {
+    id: "52",
+    name: "petite guinness",
+    description: "formule de 3 bière de 33CL",
+    price: 12,
+    image: "./guiness.jpg",
+    category: "Bière Formule de 5",
+  },
+  {
+    id: "53",
+    name: "Grande guinness",
+    description: "formule de 3 grandes bières de 75CL",
+    price: 8,
+    image: "./guiness.jpg",
+    category: "Bière Formule de 5",
+  },
+  {
+    id: "54",
+    name: "jus du Cameroun",
+    description: "",
+    price: 6,
+    image: "./cameroun.jpeg",
+    category: "jus",
+  },
+  {
+    id: "55",
+    name: "grande bière du Cameroun",
+    description: "",
+    price: 7,
+    image: "./bca.jpeg",
+    category: "Bière",
+  },
+  {
+    id: "56",
+    name: "Eau",
+    description: "une bouteill d'eau de 1,5L",
+    price: 2,
+    image: "./eau.jpg",
+    category: "Eau",
+  },
+  {
+    id: "57",
+    name: "Eau",
+    description: "une bouteille d'eau de  0,5L",
+    price: 1,
+    image: "./0,25eau.jpg",
+    category: "Eau",
+  },
+  {
+    id: "58",
+    name: "Bissap",
+    description: "50cl",
+    price: 3,
+    image: "./bissap.jpg",
+    category: "jus",
+  },
+  {
+    id: "59",
+    name: "Vin",
+    description: "(rouge, blanc, rosé)",
+    price: 3,
+    image: "./vin.jpg",
+    category: "jus",
+  },
+  {
+    id: "60",
+    name: "Jus de Gingembre",
+    description: "Frais et épicé",
+    price: 15,
+    image: "./jusGingembre.jpg",
+    category: "jus",
+  },
+];
+
+const categories = ["Tout", "jus", "Bière", "Bière Formule de 5", "Eau"];
+
+const MenuPage: React.FC = () => {
+  const { addToCart } = useCart();
+
+  const [activeCategory, setActiveCategory] = useState("Tout");
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
+
+  const filteredDishes =
+    activeCategory === "Tout"
+      ? dishes
+      : dishes.filter((dish) => dish.category === activeCategory);
+
+  const handleAddToCart = (dish: Dish) => {
+    addToCart({
+      id: dish.id,
+      name: dish.name,
+      description: dish.description,
+      price: dish.price,
+      quantity: 1,
+      image: dish.image,
+      link: "/menu",
+    });
+
+    // Animation visuelle
+    setAddedItems((prev) => new Set(prev).add(dish.id));
+    setTimeout(() => {
+      setAddedItems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(dish.id);
+        return newSet;
+      });
+    }, 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-20 overflow-hidden">
+        {/* Patterns décoratifs */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
+            Menu Drink
+          </h1>
+          <div className="w-24 h-1 bg-white mx-auto mb-6"></div>
+          <p className="text-lg md:text-xl max-w-2xl mx-auto text-white/90">
+            L’art du cocktail, entre élégance, fraîcheur et créativité.
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 py-12">
+        {/* Navigation Catégories améliorée */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`group relative px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 overflow-hidden ${
+                activeCategory === cat
+                  ? "bg-gradient-to-r from-[#4bb930] to-[#5cd93e] text-white shadow-lg scale-105"
+                  : "bg-white text-gray-700 hover:bg-gray-50 shadow-md hover:shadow-lg"
+              }`}
+            >
+              {/* Fond animé */}
+              <span className="absolute inset-0 bg-gradient-to-r from-[#4bb930] to-[#5cd93e] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>
+
+              {/* Texte */}
+              <span
+                className={`relative z-10 ${
+                  activeCategory !== cat ? "group-hover:text-white" : ""
+                } transition-colors duration-300`}
+              >
+                {cat}
+              </span>
+
+              {/* Badge compteur */}
+              {cat !== "Tout" && (
+                <span
+                  className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                    activeCategory === cat
+                      ? "bg-white/20"
+                      : "bg-gray-200 group-hover:bg-white/20"
+                  }`}
+                >
+                  {dishes.filter((d) => d.category === cat).length}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Nombre de résultats */}
+        <div className="text-center mb-8">
+          <p className="text-gray-600">
+            <span className="font-bold text-[#4bb930] text-xl">
+              {filteredDishes.length}
+            </span>{" "}
+            boisson{filteredDishes.length > 1 ? "s" : ""} disponible
+            {filteredDishes.length > 1 ? "s" : ""}
+          </p>
+        </div>
+
+        {/* Liste des plats avec animations */}
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredDishes.map((dish, index) => (
+            <div
+              key={dish.id}
+              className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 hover:border-[#4bb930]/30"
+              style={{
+                animationDelay: `${index * 50}ms`,
+              }}
+            >
+              {/* Badges */}
+              <div className="absolute top-3 left-3 z-20 flex gap-2">
+                {dish.isPopular && (
+                  <span className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold rounded-full shadow-lg">
+                    <FireIcon className="w-3 h-3" />
+                    Populaire
+                  </span>
+                )}
+                {dish.isNew && (
+                  <span className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-[#4bb930] to-[#5cd93e] text-white text-xs font-bold rounded-full shadow-lg">
+                    <SparklesIcon className="w-3 h-3" />
+                    Nouveau
+                  </span>
+                )}
+              </div>
+
+              {/* Image avec overlay */}
+              <div className="relative h-56 overflow-hidden">
+                <img
+                  src={dish.image}
+                  alt={dish.name}
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                />
+                {/* Overlay dégradé */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                {/* Prix qui apparaît sur l'image */}
+                <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg transform translate-y-0 md:translate-y-12 group-hover:translate-y-0 transition-transform duration-500">
+                  <span className="text-xl font-bold text-[#4bb930]">
+                    {dish.price.toFixed(2)} €
+                  </span>
+                </div>
+              </div>
+
+              {/* Contenu */}
+              <div className="p-5">
+                <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#4bb930] transition-colors duration-300">
+                  {dish.name}
+                </h2>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  {dish.description || "Délicieux plat préparé avec soin"}
+                </p>
+
+                {/* Bouton d'ajout au panier */}
+                <button
+                  onClick={() => handleAddToCart(dish)}
+                  disabled={addedItems.has(dish.id)}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden relative ${
+                    addedItems.has(dish.id)
+                      ? "bg-green-500 text-white"
+                      : "bg-gradient-to-r from-[#4bb930] to-[#5cd93e] text-white hover:shadow-xl hover:shadow-[#4bb930]/30 hover:scale-105"
+                  }`}
+                >
+                  {addedItems.has(dish.id) ? (
+                    <>
+                      <Check className="w-5 h-5" />
+                      <span>Ajouté !</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCartIcon className="h-5 w-5" />
+                      <span>Ajouter au panier</span>
+                    </>
+                  )}
+
+                  {/* Effet de brillance */}
+                  {!addedItems.has(dish.id) && (
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
+                  )}
+                </button>
+              </div>
+
+              {/* Bordure lumineuse au survol */}
+              <div className="absolute inset-0 border-2 border-[#4bb930] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            </div>
+          ))}
+        </div>
+
+        {/* Message si aucun résultat */}
+        {filteredDishes.length === 0 && (
+          <div className="text-center py-20">
+            <div className="inline-block p-8 bg-gray-100 rounded-2xl">
+              <p className="text-gray-600 text-lg mb-4">
+                Aucun plat trouvé dans cette catégorie
+              </p>
+              <button
+                onClick={() => setActiveCategory("Tout")}
+                className="px-6 py-3 bg-[#4bb930] text-white rounded-full hover:bg-[#3a9606] transition-all duration-300"
+              >
+                Voir tous les plats
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Section CTA en bas */}
+      <div className="bg-gradient-to-r from-[#4bb930] to-[#2a7506] text-white py-16 mt-12">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Une question sur notre menu ?
+          </h2>
+          <p className="text-lg mb-8 text-white/90">
+            Notre équipe est là pour vous conseiller et personnaliser votre
+            commande
+          </p>
+          <NavLink
+            to="/contact"
+            className="inline-block px-8 py-4 bg-white text-[#4bb930] font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+          >
+            Nous contacter
+          </NavLink>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MenuPage;
