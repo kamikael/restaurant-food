@@ -1,4 +1,4 @@
-import{c as d,j as e,r as c,N as m}from"./index-CxkuHbAW.js";import{S as i}from"./sparkles-uhf_B3Jl.js";/**
+import{c as d,j as e,r as c,N as m}from"./index-DJT9U6Y2.js";import{S as i}from"./sparkles-Bh8YOFhb.js";/**
  * @license lucide-react v0.510.0 - ISC
  *
  * This source code is licensed under the ISC license.
