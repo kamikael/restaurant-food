@@ -81,7 +81,7 @@ const dishes: Dish[] = [
   },
   {
     id: "46",
-    name: "Heineken",
+    name: "Formule de 5 Heineken",
     description: "formule de 5 bière 25 cl",
     price: 10,
     image: "./heinekenpetit.jpg",
@@ -89,8 +89,8 @@ const dishes: Dish[] = [
   },
   {
     id: "47",
-    name: "Leffe",
-    description: "formule de 5 bière 25 cl",
+    name: "Formule de 4 Leffe",
+    description: "formule de 4 bière 25 cl",
     price: 10,
     image: "./leffe.jpg",
     category: "Bière Formule de 5",
@@ -98,7 +98,7 @@ const dishes: Dish[] = [
   },
   {
     id: "48",
-    name: "1664",
+    name: "Formule de 5 1664",
     description: "formule de 5 bière 25 cl",
     price: 10,
     image: "./1664.jpg",
@@ -131,7 +131,7 @@ const dishes: Dish[] = [
   },
   {
     id: "52",
-    name: "petite guinness",
+    name: "formule de 3 petite guinness",
     description: "formule de 3 bière de 33CL",
     price: 12,
     image: "./guiness.jpg",
@@ -139,7 +139,7 @@ const dishes: Dish[] = [
   },
   {
     id: "53",
-    name: "Grande guinness",
+    name: "formule de 3 grande guinness",
     description: "formule de 3 grandes bières de 75CL",
     price: 8,
     image: "./guiness.jpg",
@@ -148,32 +148,48 @@ const dishes: Dish[] = [
   {
     id: "54",
     name: "jus du Cameroun",
-    description: "",
+    description: "boissons provenant fraichement du cameroun",
     price: 6,
-    image: "./cameroun.jpeg",
+    image: "./cameroun.jpg",
     category: "jus",
   },
   {
     id: "55",
     name: "grande bière du Cameroun",
-    description: "",
+    description: "bières provenant fraichement du cameroun",
     price: 7,
     image: "./bca.jpeg",
     category: "Bière",
   },
   {
     id: "56",
-    name: "Eau",
-    description: "une bouteill d'eau de 1,5L",
-    price: 2,
+    name: "1,5L d'Eau",
+    description: "eau naturelle",
+    price: 3,
+    image: "./eau.jpg",
+    category: "Eau",
+  },
+  {
+    id: "13",
+    name: "0.5 cl d'Eau",
+    description: "eau naturelle",
+    price: 1,
     image: "./eau.jpg",
     category: "Eau",
   },
   {
     id: "57",
-    name: "Eau",
-    description: "une bouteille d'eau de  0,5L",
-    price: 1,
+    name: "bouteille de Perrier 1L",
+    description: "Eau Gazeuse",
+    price: 4,
+    image: "./0,25eau.jpg",
+    category: "Eau",
+  },
+  {
+    id: "64",
+    name: "bouteille de Perrier 0.5 L",
+    description: "Eau Gazeuse",
+    price: 2,
     image: "./0,25eau.jpg",
     category: "Eau",
   },
@@ -182,14 +198,14 @@ const dishes: Dish[] = [
     name: "Bissap",
     description: "50cl",
     price: 3,
-    image: "./bissap.jpg",
+    image: "./bissap.png",
     category: "jus",
   },
   {
     id: "59",
-    name: "Vin",
-    description: "(rouge, blanc, rosé)",
-    price: 3,
+    name: "Vin en bouteille",
+    description: "(rouge, blanc, rosé) 70 cl",
+    price: 15,
     image: "./vin.jpg",
     category: "jus",
   },
@@ -197,7 +213,7 @@ const dishes: Dish[] = [
     id: "60",
     name: "Jus de Gingembre",
     description: "Frais et épicé",
-    price: 15,
+    price: 4,
     image: "./jusGingembre.jpg",
     category: "jus",
   },
@@ -241,7 +257,7 @@ const MenuPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-20 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-40 overflow-hidden">
         {/* Patterns décoratifs */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>

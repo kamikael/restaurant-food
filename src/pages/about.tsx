@@ -107,7 +107,7 @@ export default function About() {
           <div className="md:w-1/2 group">
             <div className="relative overflow-hidden rounded-2xl shadow-2xl">
               <img
-                src="/porte.png"
+                src="./porte.png"
                 alt="Notre restaurant"
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
               />
@@ -236,7 +236,7 @@ export default function About() {
           <div className="md:w-1/2 order-1 md:order-2 group">
             <div className="relative overflow-hidden rounded-2xl shadow-2xl">
               <img
-                src="/foodstreet.jpg"
+                src="./foodstreet.jpg"
                 alt="Mission"
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
               />

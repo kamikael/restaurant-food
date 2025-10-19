@@ -158,7 +158,7 @@ useEffect(() => {
 
                     {/* Infos produit */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">{item.name} <p>{item.description}</p></h3>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">{item.name} <p className="text-lg font-semibold text-gray-900 mb-1" >{item.description}</p></h3>
                       <p className="text-sm text-gray-500 mb-2">
                         {item.price.toFixed(2)} € / unité
                       </p>

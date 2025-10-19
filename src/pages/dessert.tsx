@@ -35,7 +35,7 @@ const dishes: Dish[] = [
     name: "moelleux au chocolat",
     description: "Moelleux au chocolat noir",
     price: 3,
-    image: "./mouellecholocalt.jpg",
+    image: "./mouellecholocalt.png",
     category: "Dessert",
     isNew: true,
   },
@@ -79,7 +79,7 @@ const MenuPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-20 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-40 overflow-hidden">
         {/* Patterns décoratifs */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>

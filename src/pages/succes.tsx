@@ -11,27 +11,12 @@ import { NavLink } from "react-router-dom";
 
 export default function Success() {
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
     // Récupérer le session_id de l'URL
     const params = new URLSearchParams(window.location.search);
     const id = params.get('session_id');
     setSessionId(id);
-
-    // Compte à rebours pour la redirection automatique
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          window.location.href = '/';
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, []);
 
   // Animation de confetti (effet visuel)
@@ -215,13 +200,7 @@ export default function Success() {
                 </NavLink>
               </div>
 
-              {/* Redirection automatique */}
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-500">
-                  Redirection automatique vers l'accueil dans{' '}
-                  <span className="font-bold text-orange-600">{countdown}</span> secondes
-                </p>
-              </div>
+              
             </div>
           </div>
 

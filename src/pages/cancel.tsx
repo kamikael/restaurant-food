@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+
 import { 
   XCircleIcon, 
   ArrowPathIcon,
@@ -10,23 +10,6 @@ import {
 import { NavLink } from "react-router-dom";
 
 export default function Cancel() {
-  const [countdown, setCountdown] = useState(15);
-
-  useEffect(() => {
-    // Compte à rebours pour la redirection automatique
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          window.location.href = '/#/panier';
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 relative overflow-hidden">
@@ -190,21 +173,7 @@ export default function Cancel() {
                   <span>Besoin d'aide ? Contactez-nous</span>
                 </NavLink>
               </div>
-
-              {/* Redirection automatique */}
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-500">
-                  Redirection automatique vers votre panier dans{' '}
-                  <span className="font-bold text-orange-600">{countdown}</span> secondes
-                </p>
-                <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-orange-500 to-red-500 h-1.5 transition-all duration-1000 ease-linear"
-                    style={{ width: `${(15 - countdown) / 15 * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-
+              
               {/* Rassurance */}
               <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <p className="text-sm text-gray-600 text-center">

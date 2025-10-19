@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import {Sparkles } from "lucide-react";
 
 type MenuCardProps = {
   title: string;
@@ -30,20 +31,28 @@ const MenuCard: React.FC<MenuCardProps> = ({
           alt={title}
           className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
         />
+       
+        {/* Overlay gradient dynamique */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500" />
 
-        {/* Overlay sombre qui s'éclaircit au survol */}
-        <div className="absolute inset-0 bg-black/60 transition-all duration-500 group-hover:bg-black/20" />
 
         {/* Texte centré */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+        <div className="absolute inset-0 flex flex-col gap-1  items-center justify-center text-white">
+           
+          
+          {subtitle && (
+            <div className="mb-4 transform transition-all duration-500 group-hover:-translate-y-2">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <span className="text-sm font-medium text-white/90 tracking-widest uppercase">
+                          {subtitle}
+                        </span>
+                      </div>
+                    </div>
+          )}
           <h3 className="text-3xl font-bold uppercase tracking-wider transition-transform duration-500 group-hover:scale-110">
             {title}
           </h3>
-          {subtitle && (
-            <p className="mt-2 text-xl uppercase tracking-wide transition-transform duration-500 group-hover:scale-110">
-              {subtitle}
-            </p>
-          )}
         </div>
 
         {/* Effet de brillance au survol */}
@@ -78,7 +87,7 @@ const FloatingMenuSection = () => {
     {
       title: "Dessert",
       subtitle: "MENU",
-      image: "./annaconiac.jpg",
+      image: "./mouellecholocalt.png",
       link: "/dessert",
     },
   ];

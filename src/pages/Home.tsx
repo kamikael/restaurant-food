@@ -304,7 +304,7 @@ const Home: React.FC = () => {
                 {/* Image principale */}
                 <div className="relative overflow-hidden rounded-3xl shadow-2xl">
                   <img
-                    src="/porte.png"
+                    src="./porte.png"
                     alt="Restaurant Mama Food's - Ambiance chaleureuse"
                     loading="lazy"
                     className="w-full h-[500px] object-cover transform group-hover:scale-105 transition-transform duration-700"
@@ -460,7 +460,7 @@ const Home: React.FC = () => {
                 {/* Image principale */}
                 <div className="relative overflow-hidden rounded-3xl shadow-2xl">
                   <img
-                    src="/poisson.jpg"
+                    src="./poisson.jpg"
                     alt="Poisson grillé - Spécialité Mama Food's"
                     loading="lazy"
                     className="w-full h-[500px] object-cover transform group-hover:scale-105 transition-transform duration-700"
@@ -639,7 +639,7 @@ const Home: React.FC = () => {
             {/* Grande image avec overlay */}
             <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
               <img
-                src="/inter.png"
+                src="./inter.png"
                 alt="Restaurant intérieur"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 group-hover:rotate-1"
               />
@@ -654,7 +654,7 @@ const Home: React.FC = () => {
             <div className="grid grid-cols-2 gap-2">
               <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
                 <img
-                  src="/tartecitron.jpg"
+                  src="./tartecitron.jpg"
                   alt="Yassa poulet"
                   className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-125 group-hover:brightness-110"
                 />
@@ -667,7 +667,7 @@ const Home: React.FC = () => {
 
               <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
                 <img
-                  src="/mouellecholocalt.jpg"
+                  src="./mouellecholocalt.jpg"
                   alt="Porc Bongo"
                   className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-125 group-hover:brightness-110"
                 />
@@ -682,7 +682,7 @@ const Home: React.FC = () => {
             {/* Moyenne image */}
             <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
               <img
-                src="/pouletBraisé.jpg"
+                src="./pouletBraisé.jpg"
                 alt="Poulet braisé"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 group-hover:-rotate-1"
               />
@@ -700,7 +700,7 @@ const Home: React.FC = () => {
             <div className="grid grid-cols-2 gap-2">
               <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
                 <img
-                  src="/porcbraisé.jpg"
+                  src="./porcbraisé.jpg"
                   alt="Porc braisé"
                   className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-125 group-hover:brightness-110"
                 />
@@ -713,7 +713,7 @@ const Home: React.FC = () => {
 
               <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
                 <img
-                  src="/saucisse.png"
+                  src="./saucisse.png"
                   alt="Samoussa"
                   className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-125 group-hover:brightness-110"
                 />
@@ -728,7 +728,7 @@ const Home: React.FC = () => {
             {/* Grande image qui prend deux hauteurs */}
             <div className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
               <img
-                src="/poisson.jpg"
+                src="./poisson.jpg"
                 alt="Poisson grillé"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               />

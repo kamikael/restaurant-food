@@ -23,50 +23,34 @@ interface Dish {
 const dishes: Dish[] = [
   {
     id: "61",
-    name: "Wings +",
+    name: "10 ailes pannées +",
     description:
       "10 wings (ailes et pilons) marinés (épicé). Avec : une sauces au choix, 1 portion de frite, 1 boisson 33 cl.",
     price: 8.5,
-    image: "./hot.png",
+    image: "./kids.png",
     category: "Menu poulet",
     isPopular: true,
   },
   {
     id: "62",
-    name: "Wings",
-    description: "10 wings (ailes et pilons) marinés (épicé)",
+    name: "10 ailes pannées",
+    description: "10 ailes pannées marinés (épicé)",
     price: 6.5,
     image: "./hot.png",
     category: "Menu poulet",
     isPopular: true,
   },
   {
-    id: "63",
-    name: "cuisse de poulet",
-    description: "1 cuisse de poulet marinée ",
-    price: 3,
-    image: "./cuisse.jpg",
-    category: "Menu poulet",
-  },
-  {
-    id: "64",
-    name: "cuisse de poulet",
-    description: "14 cuisses de poulet marinée ",
-    price: 10,
-    image: "./cuisse.jpg",
-    category: "Menu poulet",
-  },
-  {
     id: "65",
-    name: "ailes de poulet ",
-    description: "6 ailes de poulet frites",
+    name: "3 ailes de poulet ",
+    description: "3 ailes de poulet frites",
     price: 3,
-    image: "./ailespoulet.jpg",
+    image: "./ailepoulet.jpg",
     category: "Menu poulet",
   },
   {
     id: "66",
-    name: "pilon de poulet",
+    name: "3 pilon de poulet",
     description: "3 pilons de poulet marinés",
     price: 3,
     image: "./pilon.jpg",
@@ -74,7 +58,7 @@ const dishes: Dish[] = [
   },
   {
     id: "67",
-    name: "Haut de suisse de poulet",
+    name: "2 Haut de poulet",
     description: "2 hauts de cuisse de poulet marinés",
     price: 3,
     image: "./hautpoulet.jpg",
@@ -82,16 +66,16 @@ const dishes: Dish[] = [
   },
   {
     id: "68",
-    name: "saucisse",
-    description: "1 saucisse",
-    price: 1,
+    name: "6 saucisses",
+    description: "6 saucisses, sauces offertes au choix",
+    price: 5,
     image: "./saucisse.png",
     category: "Menu poulet",
   },
   {
     id: "69",
     name: "sauce oignon",
-    description: "accompagnement",
+    description: "accompagnement offert",
     price: 0,
     image: "./sauceoigon.jpg",
     category: "Sauces gratuites",
@@ -99,7 +83,7 @@ const dishes: Dish[] = [
   {
     id: "70",
     name: "sauce verte",
-    description: "accompagnement",
+    description: "accompagnement offert",
     price: 0,
     image: "./sauceveerte.jpg",
     category: "Sauces gratuites",
@@ -107,7 +91,7 @@ const dishes: Dish[] = [
   {
     id: "71",
     name: "sauce piquante",
-    description: "accompagnement",
+    description: "accompagnement offert",
     price: 0,
     image: "./piquante.jpg",
     category: "Sauces gratuites",
@@ -152,7 +136,7 @@ const MenuPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-20 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-40 overflow-hidden">
         {/* Patterns décoratifs */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>

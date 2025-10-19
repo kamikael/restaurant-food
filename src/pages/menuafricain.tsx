@@ -51,7 +51,7 @@ const dishes: Dish[] = [
     id: "4",
     name: "Ailes de Poulet",
     description: "oignons blancs, moutarde, ail",
-    price: 15,
+    price: 12,
     image: "./ailepoulet.jpg",
     category: "Viande",
   },
@@ -122,14 +122,6 @@ const dishes: Dish[] = [
     category: "Poisson",
   },
   {
-    id: "13",
-    name: "Dorade Braisée XXL",
-    description: "oignon, céleri, persil, citron",
-    price: 35,
-    image: "./doradeBraisé.jpg",
-    category: "Poisson",
-  },
-  {
     id: "14",
     name: "Tilapia Braisé",
     description: "oignon, céleri, persil, citron",
@@ -139,13 +131,12 @@ const dishes: Dish[] = [
   },
   {
     id: "15",
-    name: "Tilapia Braisé (petit)",
+    name: "Bar Braisé xxxl",
     description: "oignon, céleri, persil, citron",
-    price: 10,
-    image: "./tilapiaBraisé.jpg",
+    price: 40,
+    image: "./barBraisé.jpg",
     category: "Poisson",
-  },
-  {
+  },{
     id: "16",
     name: "Bar Braisé",
     description: "oignon, céleri, persil, citron",
@@ -244,9 +235,9 @@ const dishes: Dish[] = [
   {
     id: "28",
     name: "Bissap",
-    description: "50cl",
+    description: "bouteille de 50cl",
     price: 3,
-    image: "./bissap.jpg",
+    image: "./bissap.png",
     category: "Boisson",
   },
   {
@@ -260,8 +251,8 @@ const dishes: Dish[] = [
   {
     id: "30",
     name: "Jus de Gingembre",
-    description: "Frais et épicé",
-    price: 15,
+    description: "bouteille de 50cl Frais et épicé",
+    price: 4,
     image: "./jusGingembre.jpg",
     category: "Boisson",
   },
@@ -318,7 +309,7 @@ const dishes: Dish[] = [
     id: "37",
     name: "brochette de boeuf",
     description: "viande de boeuf",
-    price: 1,
+    price: 2.5,
     image: "./boeuf.jpg",
     category: "Viande",
   },
@@ -326,7 +317,7 @@ const dishes: Dish[] = [
     id: "38",
     name: "brochette de porc",
     description: "viande porc",
-    price: 1,
+    price: 2,
     image: "./bporc.jpg",
     category: "Viande",
   },
@@ -377,7 +368,7 @@ const MenuPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-20 overflow-hidden">
+      <div className="relative bg-gradient-to-b from-[#0a1a05] via-[#020701] to-[#0a1a05] text-white py-40 overflow-hidden">
         {/* Patterns décoratifs */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>

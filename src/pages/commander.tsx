@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { ShoppingBag, User, Mail, Phone, CheckCircle, Lock, Shield } from 'lucide-react';
+import { ShoppingBag, User, Mail, Phone, CheckCircle, Lock, Shield, MapPin } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import {HandleCheckout} from '../components/payer';
+import { HandleCheckout } from '../components/payer';
+
 interface FormData {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
+  street: string;
+  streetNumber: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  apartment?: string;
 }
 
 interface FormErrors {
@@ -14,27 +21,39 @@ interface FormErrors {
   lastName?: string;
   email?: string;
   phone?: string;
+  street?: string;
+  streetNumber?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
 }
 
-
+interface Message {
+  type: 'success' | 'error';
+  text: string;
+}
 
 const CheckoutForm = () => {
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     email: '',
-    phone: ''
+    phone: '',
+    street: '',
+    streetNumber: '',
+    city: '',
+    postalCode: '',
+    country: 'France',
+    apartment: ''
   });
   
   const [errors, setErrors] = useState<FormErrors>({});
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<Message | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Données du panier (exemple - remplacer par vos vraies données)
-  const {getCartSummary} = useCart()
-  const cartSummary = getCartSummary()
+  const { getCartSummary } = useCart();
+  const cartSummary = getCartSummary();
 
-  // Validation des champs
   const validateField = (name: keyof FormData, value: string): string | undefined => {
     switch (name) {
       case 'firstName':
@@ -64,40 +83,66 @@ const CheckoutForm = () => {
         if (!value.trim()) {
           return 'Le numéro de téléphone est requis';
         }
-        // Nettoyer: supprimer espaces, tirets, parenthèses, points
-        const cleanPhone = value.replace(/[\s\-().]/g, '');
-        
-        // Vérifier la longueur minimale/maximale
+        const cleanPhone = value.replace(/[\s\-().+]/g, '');
         if (cleanPhone.length < 10) {
           return 'Le numéro doit contenir au moins 10 chiffres';
         }
         if (cleanPhone.length > 15) {
           return 'Le numéro ne peut pas dépasser 15 chiffres';
         }
-        
-        // Formats acceptés pour la France
-        const frenchMobileRegex = /^(0[6-7]\d{8})$/; // 06 ou 07 + 8 chiffres
-        const frenchLandlineRegex = /^(0[1-5,9]\d{8})$/; // 01-05, 09 + 8 chiffres
-        const internationalRegex = /^\+33[1-9]\d{8}$/; // +33 + 9 chiffres
-        const genericInternationalRegex = /^\+[1-9]\d{8,14}$/; // Autres pays
-        
-        const isValidFrenchMobile = frenchMobileRegex.test(cleanPhone);
-        const isValidFrenchLandline = frenchLandlineRegex.test(cleanPhone);
-        const isValidFrenchIntl = internationalRegex.test(cleanPhone);
-        const isValidOtherIntl = genericInternationalRegex.test(cleanPhone);
-        
-        if (!isValidFrenchMobile && !isValidFrenchLandline && !isValidFrenchIntl && !isValidOtherIntl) {
-          return 'Format invalide. Exemples: 06 12 34 56 78, +33 6 12 34 56 78';
+        if (!/^[0-9+]+$/.test(cleanPhone)) {
+          return 'Format de numéro invalide';
         }
-        
-        // Vérifications supplémentaires pour numéros français sans indicatif
-        if (cleanPhone.startsWith('0')) {
-          // Vérifier que ce n'est pas un numéro invalide (ex: 00, 08)
-          if (cleanPhone.startsWith('00') || cleanPhone.startsWith('08')) {
-            return 'Numéro invalide. Utilisez un numéro mobile (06/07) ou fixe (01-05, 09)';
-          }
+        return undefined;
+
+      case 'streetNumber':
+        if (!value.trim()) {
+          return 'Le numéro de rue est requis';
         }
-        
+        if (!/^[0-9]+[a-zA-Z]?$/.test(value.trim())) {
+          return 'Format invalide (ex: 123, 45bis)';
+        }
+        return undefined;
+
+      case 'street':
+        if (!value.trim()) {
+          return 'Le nom de rue est requis';
+        }
+        if (value.trim().length < 2) {
+          return 'Le nom de rue doit contenir au moins 2 caractères';
+        }
+        return undefined;
+
+      case 'city':
+        if (!value.trim()) {
+          return 'La ville est requise';
+        }
+        if (value.trim().length < 2) {
+          return 'La ville doit contenir au moins 2 caractères';
+        }
+        if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(value)) {
+          return 'Format de ville invalide';
+        }
+        return undefined;
+
+      case 'postalCode':
+        if (!value.trim()) {
+          return 'Le code postal est requis';
+        }
+        // Accepte format français (5 chiffres) et autres formats internationaux
+        if (!/^[0-9A-Z\s-]{3,10}$/.test(value.toUpperCase())) {
+          return 'Format de code postal invalide';
+        }
+        return undefined;
+
+      case 'country':
+        if (!value.trim()) {
+          return 'Le pays est requis';
+        }
+        return undefined;
+
+      case 'apartment':
+        // Champ optionnel, pas d'erreur
         return undefined;
 
       default:
@@ -105,27 +150,19 @@ const CheckoutForm = () => {
     }
   };
 
-  // Gérer les changements de champs
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
     let cleanedValue = value;
     
-    if (name === 'firstName' || name === 'lastName') {
+    if (name === 'firstName' || name === 'lastName' || name === 'city') {
       cleanedValue = value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, '');
     } else if (name === 'phone') {
-      // Autoriser chiffres, +, espaces, tirets, parenthèses, points
       cleanedValue = value.replace(/[^\d\s\-+().]/g, '');
-      
-      // Auto-formater pour la France si commence par 0 ou +33
-      if (cleanedValue.startsWith('0') && cleanedValue.length === 10) {
-        // Format: 06 12 34 56 78
-        cleanedValue = cleanedValue.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
-      } else if (cleanedValue.startsWith('+33') && cleanedValue.replace(/[\s\-().]/g, '').length === 12) {
-        // Format: +33 6 12 34 56 78
-        const digits = cleanedValue.replace(/[\s\-().]/g, '');
-        cleanedValue = digits.replace(/(\+33)(\d)(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5 $6');
-      }
+    } else if (name === 'postalCode') {
+      cleanedValue = value.replace(/[^0-9A-Za-z\s-]/g, '').toUpperCase();
+    } else if (name === 'streetNumber') {
+      cleanedValue = value.replace(/[^0-9a-zA-Z]/g, '');
     } else if (name === 'email') {
       cleanedValue = value.replace(/\s/g, '').toLowerCase();
     }
@@ -142,16 +179,17 @@ const CheckoutForm = () => {
     }));
   };
 
-  // Valider tous les champs
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     let isValid = true;
 
     (Object.keys(formData) as Array<keyof FormData>).forEach(key => {
-      const error = validateField(key, formData[key]);
-      if (error) {
-        newErrors[key] = error;
-        isValid = false;
+      if (key !== 'apartment') { // Ignorer le champ optionnel
+        const error = validateField(key, formData[key]);
+        if (error) {
+          newErrors[key] = error;
+          isValid = false;
+        }
       }
     });
 
@@ -159,57 +197,69 @@ const CheckoutForm = () => {
     return isValid;
   };
 
-  // Gérer la soumission
   const handleCheckout = async () => {
     if (!validateForm()) {
+      setMessage({
+        type: 'error',
+        text: 'Veuillez corriger les erreurs ci-dessus'
+      });
       return;
     }
 
     setLoading(true);
-    setMessage('');
+    setMessage(null);
 
     try {
       if (cartSummary.totalItems === 0) {
-        setErrors({ email: 'Votre panier est vide' });
+        setMessage({
+          type: 'error',
+          text: 'Votre panier est vide'
+        });
         setLoading(false);
         return;
       }
 
       const cleanPhone = formData.phone.replace(/[\s\-().]/g, '');
-
-      // Normaliser le numéro français vers le format international
       let normalizedPhone = cleanPhone;
       if (cleanPhone.startsWith('0')) {
-        // Convertir 06... en +336...
         normalizedPhone = '+33' + cleanPhone.substring(1);
       }
+
+      const fullAddress = [
+        formData.streetNumber,
+        formData.street,
+        formData.apartment ? `Apt ${formData.apartment}` : ''
+      ].filter(Boolean).join(' ');
 
       const customerData = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim().toLowerCase(),
-        phone: normalizedPhone, // Toujours au format international
-        fullName: `${formData.firstName.trim()} ${formData.lastName.trim()}`
+        phone: normalizedPhone,
+        fullName: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
+        address: {
+          street: fullAddress,
+          city: formData.city.trim(),
+          postalCode: formData.postalCode.trim(),
+          country: formData.country.trim()
+        }
       };
+      
 
-      // Simuler l'appel API (remplacer par votre HandleCheckout)
+      // Appel au checkout
       await HandleCheckout(cartSummary, customerData);
       
-      console.log('Données envoyées:', { cartSummary, customerData });
+      setMessage({
+        type: 'success',
+        text: 'Redirection vers le paiement en cours...'
+      });
       
-      setMessage('✅ Redirection vers le paiement...');
-      
-      setTimeout(() => {
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: ''
-        });
-      }, 1000);
-      
+    
     } catch (err) {
-      setErrors({ email: 'Une erreur est survenue. Veuillez réessayer.' });
+      setMessage({
+        type: 'error',
+        text: 'Une erreur est survenue. Veuillez réessayer.'
+      });
       console.error('Erreur checkout:', err);
     } finally {
       setLoading(false);
@@ -261,150 +311,294 @@ const CheckoutForm = () => {
                   (incluant {cartSummary.delivery.toFixed(2)}€ de livraison)
                 </p>
               )}
-              {cartSummary.discount > 0 && (
-                <p className="text-xs text-white/80">
-                  Réduction appliquée : -{cartSummary.discount.toFixed(2)}€
-                </p>
-              )}
             </div>
           </div>
 
           {/* Formulaire */}
           <div className="p-8">
-            {/* Message de succès */}
+            {/* Message d'erreur/succès */}
             {message && (
-              <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg flex items-center">
-                <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                <p className="text-green-700 font-medium">{message}</p>
+              <div className={`mb-6 p-4 rounded-lg flex items-start border-l-4 ${
+                message.type === 'error'
+                  ? 'bg-red-50 border-red-500'
+                  : 'bg-green-50 border-green-500'
+              }`}>
+                {message.type === 'error' ? (
+                  <svg className="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                )}
+                <p className={message.type === 'error' ? 'text-red-700' : 'text-green-700'}>
+                  {message.text}
+                </p>
               </div>
             )}
 
             <div className="space-y-5">
-              {/* Prénom */}
+              {/* Section Informations personnelles */}
               <div>
-                <label className="flex items-center text-gray-700 text-sm font-semibold mb-2">
+                <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center">
                   <User className="h-5 w-5 mr-2 text-orange-500" />
-                  Prénom <span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="Jean"
-                  maxLength={50}
-                  className={`w-full py-3 px-4 border-2 rounded-xl text-gray-700 
-                    focus:outline-none transition-all
-                    ${errors.firstName 
-                      ? 'border-red-300 bg-red-50 focus:border-red-500' 
-                      : 'border-gray-200 bg-gray-50 focus:border-orange-500'}
-                    hover:border-orange-300`}
-                  disabled={loading}
-                />
-                {errors.firstName && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center">
-                    <span className="mr-1">⚠️</span> {errors.firstName}
-                  </p>
-                )}
+                  Informations personnelles
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  {/* Prénom */}
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      Prénom <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="Jean"
+                      maxLength={50}
+                      className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                        errors.firstName 
+                          ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                          : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                      } hover:border-orange-300`}
+                      disabled={loading}
+                    />
+                    {errors.firstName && (
+                      <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                    )}
+                  </div>
+
+                  {/* Nom */}
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      Nom <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Dupont"
+                      maxLength={50}
+                      className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                        errors.lastName 
+                          ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                          : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                      } hover:border-orange-300`}
+                      disabled={loading}
+                    />
+                    {errors.lastName && (
+                      <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                    <Mail className="h-5 w-5 mr-2 text-orange-500" />
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="votre.email@exemple.com"
+                    maxLength={100}
+                    className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                      errors.email 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                    } hover:border-orange-300`}
+                    disabled={loading}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                  )}
+                  {!errors.email && (
+                    <p className="text-xs text-gray-500 mt-1">Confirmation de commande envoyée à cette adresse</p>
+                  )}
+                </div>
+
+                {/* Téléphone */}
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2 flex items-center">
+                    <Phone className="h-5 w-5 mr-2 text-orange-500" />
+                    Téléphone <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="06 12 34 56 78"
+                    maxLength={20}
+                    className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                      errors.phone 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                    } hover:border-orange-300`}
+                    disabled={loading}
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                  )}
+                  {!errors.phone && formData.phone && (
+                    <p className="text-xs text-green-600 mt-1">Numéro valide</p>
+                  )}
+                </div>
               </div>
 
-              {/* Nom */}
-              <div>
-                <label className="flex items-center text-gray-700 text-sm font-semibold mb-2">
-                  <User className="h-5 w-5 mr-2 text-orange-500" />
-                  Nom <span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Dupont"
-                  maxLength={50}
-                  className={`w-full py-3 px-4 border-2 rounded-xl text-gray-700 
-                    focus:outline-none transition-all
-                    ${errors.lastName 
-                      ? 'border-red-300 bg-red-50 focus:border-red-500' 
-                      : 'border-gray-200 bg-gray-50 focus:border-orange-500'}
-                    hover:border-orange-300`}
-                  disabled={loading}
-                />
-                {errors.lastName && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center">
-                    <span className="mr-1">⚠️</span> {errors.lastName}
-                  </p>
-                )}
-              </div>
+              {/* Section Adresse de livraison */}
+              <div className="pt-6 border-t border-gray-200">
+                <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2 text-orange-500" />
+                  Adresse de livraison
+                </h3>
 
-              {/* Email */}
-              <div>
-                <label className="flex items-center text-gray-700 text-sm font-semibold mb-2">
-                  <Mail className="h-5 w-5 mr-2 text-orange-500" />
-                  Adresse email <span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="votre.email@exemple.com"
-                  maxLength={100}
-                  className={`w-full py-3 px-4 border-2 rounded-xl text-gray-700 
-                    focus:outline-none transition-all
-                    ${errors.email 
-                      ? 'border-red-300 bg-red-50 focus:border-red-500' 
-                      : 'border-gray-200 bg-gray-50 focus:border-orange-500'}
-                    hover:border-orange-300`}
-                  disabled={loading}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center">
-                    <span className="mr-1">⚠️</span> {errors.email}
-                  </p>
-                )}
-                {!errors.email && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    📧 Confirmation de commande envoyée à cette adresse
-                  </p>
-                )}
-              </div>
+                {/* Numéro et rue */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      N° <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="streetNumber"
+                      value={formData.streetNumber}
+                      onChange={handleChange}
+                      placeholder="123"
+                      maxLength={10}
+                      className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                        errors.streetNumber 
+                          ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                          : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                      } hover:border-orange-300`}
+                      disabled={loading}
+                    />
+                    {errors.streetNumber && (
+                      <p className="text-red-500 text-xs mt-1">{errors.streetNumber}</p>
+                    )}
+                  </div>
 
-              {/* Téléphone */}
-              <div>
-                <label className="flex items-center text-gray-700 text-sm font-semibold mb-2">
-                  <Phone className="h-5 w-5 mr-2 text-orange-500" />
-                  Numéro de téléphone <span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="06 12 34 56 78 ou +33 6 12 34 56 78"
-                  maxLength={20}
-                  className={`w-full py-3 px-4 border-2 rounded-xl text-gray-700 
-                    focus:outline-none transition-all
-                    ${errors.phone 
-                      ? 'border-red-300 bg-red-50 focus:border-red-500' 
-                      : 'border-gray-200 bg-gray-50 focus:border-orange-500'}
-                    hover:border-orange-300`}
-                  disabled={loading}
-                />
-                {errors.phone && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center">
-                    <span className="mr-1">⚠️</span> {errors.phone}
-                  </p>
-                )}
-                {!errors.phone && formData.phone && (
-                  <p className="text-xs text-green-600 mt-2 flex items-center">
-                    <span className="mr-1">✓</span> Numéro valide
-                  </p>
-                )}
-                {!errors.phone && !formData.phone && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    📱 Mobile (06/07) ou fixe (01-05/09) • Format international accepté
-                  </p>
-                )}
+                  <div className="col-span-2">
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      Rue <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="street"
+                      value={formData.street}
+                      onChange={handleChange}
+                      placeholder="Rue de la Paix"
+                      maxLength={100}
+                      className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                        errors.street 
+                          ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                          : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                      } hover:border-orange-300`}
+                      disabled={loading}
+                    />
+                    {errors.street && (
+                      <p className="text-red-500 text-xs mt-1">{errors.street}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Appartement (optionnel) */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-semibold mb-2">
+                    Appartement / Complément d'adresse
+                  </label>
+                  <input
+                    type="text"
+                    name="apartment"
+                    value={formData.apartment}
+                    onChange={handleChange}
+                    placeholder="Apt 5, Bâtiment B (optionnel)"
+                    maxLength={50}
+                    className="w-full py-3 px-4 border-2 border-gray-200 bg-gray-50 rounded-lg text-gray-700 focus:outline-none focus:border-orange-500 transition-all hover:border-orange-300"
+                    disabled={loading}
+                  />
+                </div>
+
+                {/* Ville et code postal */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      Ville <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      placeholder="Paris"
+                      maxLength={50}
+                      className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                        errors.city 
+                          ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                          : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                      } hover:border-orange-300`}
+                      disabled={loading}
+                    />
+                    {errors.city && (
+                      <p className="text-red-500 text-xs mt-1">{errors.city}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                      Code postal <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="postalCode"
+                      value={formData.postalCode}
+                      onChange={handleChange}
+                      placeholder="75001"
+                      maxLength={10}
+                      className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                        errors.postalCode 
+                          ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                          : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                      } hover:border-orange-300`}
+                      disabled={loading}
+                    />
+                    {errors.postalCode && (
+                      <p className="text-red-500 text-xs mt-1">{errors.postalCode}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Pays */}
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2">
+                    Pays <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    className={`w-full py-3 px-4 border-2 rounded-lg text-gray-700 focus:outline-none transition-all ${
+                      errors.country 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 bg-gray-50 focus:border-orange-500'
+                    } hover:border-orange-300`}
+                    disabled={loading}
+                  >
+                    <option>France</option>
+                    <option>Belgique</option>
+                    <option>Suisse</option>
+                    <option>Luxembourg</option>
+                    <option>Autres</option>
+                  </select>
+                  {errors.country && (
+                    <p className="text-red-500 text-xs mt-1">{errors.country}</p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -412,13 +606,11 @@ const CheckoutForm = () => {
             <button
               onClick={handleCheckout}
               disabled={loading || cartSummary.totalItems === 0}
-              className={`w-full mt-8 py-4 px-6 rounded-xl font-bold text-lg
-                transition-all duration-300 transform
-                ${loading || cartSummary.totalItems === 0
+              className={`w-full mt-8 py-4 px-6 rounded-lg font-bold text-lg transition-all duration-300 transform flex items-center justify-center space-x-2 ${
+                loading || cartSummary.totalItems === 0
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
-                }
-                flex items-center justify-center space-x-2`}
+              }`}
             >
               {loading ? (
                 <>
@@ -452,8 +644,8 @@ const CheckoutForm = () => {
 
         {/* Note de bas de page */}
         <div className="text-center mt-8 text-sm text-gray-600">
-          <p>🍽️ <strong>Mama Food's</strong> - Cuisine africaine authentique</p>
-          <p className="mt-2">Livraison gratuite • Paiement sécurisé par Stripe</p>
+          <p>Mama Food's - Cuisine africaine authentique</p>
+          <p className="mt-2">Livraison gratuite • Paiement sécurisé</p>
         </div>
       </div>
     </div>

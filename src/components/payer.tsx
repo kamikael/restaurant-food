@@ -15,6 +15,12 @@ interface CartSummary {
   discount: number;
   items: CartItem[];
 }
+interface address {
+    street: string;
+    city: string;
+    postalCode: string;
+    country: string;
+}
 
 interface CustomerData {
   firstName: string;
@@ -22,6 +28,7 @@ interface CustomerData {
   email: string;
   phone: string;
   fullName: string;
+  address: address;
 }
 
 export async function HandleCheckout(cartSummary: CartSummary, customerData: CustomerData) {
@@ -45,7 +52,7 @@ export async function HandleCheckout(cartSummary: CartSummary, customerData: Cus
 
     // Ajouter les infos de livraison et réduction
     const fullDescription = `${description} | Livraison: ${cartSummary.delivery}€ | Réduction: ${cartSummary.discount}€`;
-
+    
     const response = await fetch("https://backend-restaurant-ml36.onrender.com/create-checkout-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,14 +64,18 @@ export async function HandleCheckout(cartSummary: CartSummary, customerData: Cus
         discount: cartSummary.discount,
         items: cartSummary.items.map(item => ({
           name: item.name,
-          quantity: item.quantity,
-          description: item.description || ''
-        })),
+          quantity: item.quantity
+          
+        })).slice(0, 500),
         customerEmail: customerData.email,
         customerName: customerData.fullName,
         customerPhone: customerData.phone,
         customerFirstName: customerData.firstName,
         customerLastName: customerData.lastName,
+        customercity: customerData.address.city,
+        customerstreet: customerData.address.street,
+        customerpostalCode: customerData.address.postalCode,
+        customercountry: customerData.address.country
       }),
     });
 

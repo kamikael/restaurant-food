@@ -1,13 +1,12 @@
 {
-  "homepage": "https://kamikael.github.io/restaurant/",
+  "homepage": "https://kamikael.github.io/restaurant",
   "name": "website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d dist",
     "dev": "vite",
+    "deploy": "gh-pages -d dist",
     "build": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
