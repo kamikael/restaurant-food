@@ -1,4 +1,4 @@
-import{c as v,r as s,j as e,N as i,F as u}from"./index-C0ekEK5v.js";import{S as f}from"./sparkles-CgOC8B-y.js";import{F as b,a as c}from"./ClockIcon-Dx0fNuY2.js";import{F as n}from"./SparklesIcon-DG1c6-DA.js";/**
+import{c as v,r as s,j as e,N as i,F as u}from"./index-BCkDX9Zn.js";import{S as f}from"./sparkles-CJzoZvo9.js";import{F as b,a as c}from"./ClockIcon-DRKBJGec.js";import{F as n}from"./SparklesIcon-DbnPwRBo.js";/**
  * @license lucide-react v0.510.0 - ISC
  *
  * This source code is licensed under the ISC license.
