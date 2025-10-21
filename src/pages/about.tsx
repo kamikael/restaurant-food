@@ -5,22 +5,17 @@ export default function About() {
   const teamMembers = [
     {
       name: "Jean Dupont",
-      role: "Chef Exécutif",
+      role: "Notre Chef",
       image: "./avatar.png",
       description: "15 ans d'expérience culinaire",
     },
     {
-      name: "Awa Traoré",
-      role: "Directrice",
+      name: "marlyse kend",
+      role: "Gérante du Restaurant",
       image: "./avatar.png",
-      description: "Passionnée d'hospitalité",
-    },
-    {
-      name: "Karim B.",
-      role: "Sommelier",
-      image: "./avatar.png",
-      description: "Expert en accords mets et vins",
-    },
+      description: "Passionnée par la cuisine africaine",
+    }
+  
   ];
 
   const values = [
@@ -263,7 +258,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10">
             {teamMembers.map((member, index) => (
               <div
                 key={index}

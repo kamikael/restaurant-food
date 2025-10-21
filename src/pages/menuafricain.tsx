@@ -321,6 +321,30 @@ const dishes: Dish[] = [
     image: "./bporc.jpg",
     category: "Viande",
   },
+  {
+    id: "112",
+    name: "ndole viande",
+    description: "ndole viande",
+    price: 18,
+    image: "./nodleviande.jpg",
+    category: "Viande",
+  },
+  {
+    id: "113",
+    name: "ndole poisson",
+    description: "ndole poisson",
+    price: 18,
+    image: "./ndolepoisson.jpeg",
+    category: "Poisson",
+  },
+  {
+    id: "114",
+    name: "ndole royale",
+    description: "ndole royale",
+    price: 20,
+    image: "./ndoleroyale.png",
+    category: "Viande",
+  },
 ];
 
 const categories = [

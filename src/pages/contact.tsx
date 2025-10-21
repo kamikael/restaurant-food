@@ -31,7 +31,7 @@ interface Contact2Props {
 export const Contact2 = ({
   title = "Contactez-nous",
   description = "Une question ? Une suggestion ? Notre équipe est à votre écoute pour vous répondre dans les plus brefs délais.",
-  phone = "+33 6 41 92 48 03",
+  phone = "+07 51 17 39 76",
   email = "mamafood.s@yahoo.com",
   address = "40 Rue de Thermes, 62100 Calais, France",
   web = { label: "www.mamafoods.com", url: "https://mamafoods.com" },
@@ -223,18 +223,15 @@ export const Contact2 = ({
                 Horaires d'ouverture
               </h3>
               <div className="space-y-4">
-                <div className="flex justify-between items-center pb-3 border-b border-green-400/30">
-                  <span className="font-medium">Lundi - Vendredi</span>
-                  <span className="font-bold">11h - 23h</span>
+                <div className="flex justify-between items-center p-3 border-b border-green-400/30">
+                  <span className="font-medium">mardi - jeudi</span>
+                  <span className="font-bold">13h - 24h</span>
                 </div>
-                <div className="flex justify-between items-center pb-3 border-b border-green-400/30">
-                  <span className="font-medium">Samedi</span>
-                  <span className="font-bold">12h - 00h</span>
+                <div className="flex justify-between items-center p-3 border-b border-green-400/30">
+                  <span className="font-medium">vendredi - dimanche</span>
+                  <span className="font-bold">12h - 2h</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Dimanche</span>
-                  <span className="font-bold">12h - 22h</span>
-                </div>
+                
               </div>
               <div className="mt-6 pt-6 border-t border-green-400/30">
                 <p className="text-sm text-green-100 flex items-center gap-2">

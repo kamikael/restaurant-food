@@ -39,6 +39,15 @@ const dishes: Dish[] = [
     category: "Dessert",
     isNew: true,
   },
+  {
+    id: "70",
+    name: "cake au chocolat",
+    description: "cake au chocolat noir",
+    price: 3,
+    image: "./mouellecholocalt.jpg",
+    category: "Dessert",
+    isNew: true,
+  },
 ];
 
 const categories = ["Tout", "Dessert"];
